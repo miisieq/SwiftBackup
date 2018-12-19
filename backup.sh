@@ -67,7 +67,7 @@ for MYSQL_DATABASE in "${BACKUP_MYSQL_DATABASES[@]}"; do
     FILES_TO_UPLOAD+=("${FILENAME}")
 done
 
-# Wysyłka plików do OpenStack Swift.
+# Upload files to OpenStack Swift.
 for FILE_TO_UPLOAD in "${FILES_TO_UPLOAD[@]}"; do
     upload_file "${FILE_TO_UPLOAD}"
     rm "${FILE_TO_UPLOAD}"
