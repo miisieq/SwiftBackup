@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [[ ! -f ./.env ]]; then
+    echo "Configuration file \".env\" does not exist."
+    exit 1
+fi
+
 source ./.env
 
 function check_variables_existence() {
@@ -32,7 +37,7 @@ function upload_file() {
     "
     swift ${AUTHORIZATION} upload --quiet --header "X-Delete-After: $BACKUP_OS_TTL" "${BACKUP_OS_CONTAINER}" "${1}"
     UPLOADED_SIZE=$(swift list ${AUTHORIZATION} "${BACKUP_OS_CONTAINER}" --lh -p "$1" | head -n 1 | awk '{print $1}')
-    printf "%s: %s\n" "${1}" "${UPLOADED_SIZE}"
+    printf " – %s: %s\n" "${1}" "${UPLOADED_SIZE}"
 }
 
 check_variables_existence \
@@ -66,6 +71,27 @@ for MYSQL_DATABASE in "${BACKUP_MYSQL_DATABASES[@]}"; do
         "$MYSQL_DATABASE" | gzip > "$FILENAME"
     FILES_TO_UPLOAD+=("${FILENAME}")
 done
+
+# Check required commands for files backup.
+if [[ ! -z "${BACKUP_DIRECTORIES}" ]]; then
+    check_commands_existence "tar"
+fi
+
+# Dump and compress directories.
+for BACKUP_DIRECTORY in "${BACKUP_DIRECTORIES[@]}"; do
+    if [[ ! -d "${BACKUP_DIRECTORY}" ]]; then
+        echo "Directory \"${BACKUP_DIRECTORY}\" does not exist."
+        exit 1
+    fi
+
+    FILENAME="$(echo "${BACKUP_DIRECTORY}" | sed -r 's/[\/]+/_/g')_$(date '+%Y-%m-%d_%H-%M-%S').tar.gz"
+    tar --xform s:'./':: --create --gzip --file="${FILENAME}" --directory="${BACKUP_DIRECTORY}/" .
+    FILES_TO_UPLOAD+=("${FILENAME}")
+done
+
+if [[ ! -z "${FILES_TO_UPLOAD}" ]]; then
+    echo "Files uploaded to OpenStack Swift container – \"${BACKUP_OS_CONTAINER}\":"
+fi
 
 # Upload files to OpenStack Swift.
 for FILE_TO_UPLOAD in "${FILES_TO_UPLOAD[@]}"; do
