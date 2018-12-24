@@ -8,6 +8,14 @@ if [[ ! -f "${CONFIGURATION_FILE_PATH}" ]]; then
     exit 1
 fi
 
+CONFIGURATION_FILE_PERMISSIONS=$(stat -c "%a" "${CONFIGURATION_FILE_PATH}")
+if [[ ! 600 == "${CONFIGURATION_FILE_PERMISSIONS}" ]]; then
+    echo "Permissions 0${CONFIGURATION_FILE_PERMISSIONS} for \"${CONFIGURATION_FILE_PATH}\" are too open."
+    echo "It is recommended that your configuration files are NOT accessible by others."
+    echo "You can execute \"chmod 600 ${CONFIGURATION_FILE_PATH}\" to set proper permissions."
+    exit 1
+fi
+
 source "${CONFIGURATION_FILE_PATH}"
 
 function check_variables_existence() {
