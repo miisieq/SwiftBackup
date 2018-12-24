@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-if [[ ! -f ./.env ]]; then
-    echo "Configuration file \".env\" does not exist."
+CONFIGURATION_FILE_PATH="${PWD}/.env"
+
+if [[ ! -f "${CONFIGURATION_FILE_PATH}" ]]; then
+    echo "Configuration file \"${CONFIGURATION_FILE_PATH}\" does not exist."
     exit 1
 fi
 
-source ./.env
+source "${CONFIGURATION_FILE_PATH}"
 
 function check_variables_existence() {
     for REQUIRED_VARIABLE in "$@"; do
