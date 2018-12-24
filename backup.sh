@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-CONFIGURATION_FILE_PATH="${PWD}/.env"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+CONFIGURATION_FILE_PATH="${DIR}/.env"
 
 if [[ ! -f "${CONFIGURATION_FILE_PATH}" ]]; then
     echo "Configuration file \"${CONFIGURATION_FILE_PATH}\" does not exist."
