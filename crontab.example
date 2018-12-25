@@ -1,0 +1,5 @@
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+SHELL=/bin/bash
+
+# Execute backup every day at midnight.
+0 0 * * * ~/SwiftBackup/backup.sh >> /var/log/SwiftBackup.log 2>&1
