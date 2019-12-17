@@ -75,6 +75,7 @@ fi
 for MYSQL_DATABASE in "${BACKUP_MYSQL_DATABASES[@]}"; do
     FILENAME="db_${MYSQL_DATABASE}_$(date '+%Y-%m-%d_%H-%M-%S').sql.gz"
     mysqldump \
+        --column-statistics=0 \
         --host="$BACKUP_MYSQL_HOST" \
         --user="$BACKUP_MYSQL_USER" \
         --password="$BACKUP_MYSQL_PASSWORD" \
