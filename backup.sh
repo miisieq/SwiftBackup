@@ -100,7 +100,7 @@ for BACKUP_DIRECTORY in "${BACKUP_DIRECTORIES[@]}"; do
     FILES_TO_UPLOAD+=("${FILENAME}")
 done
 
-if [[ ! -z "${FILES_TO_UPLOAD}" ]]; then
+if [[ -n "${FILES_TO_UPLOAD}" ]]; then
     echo "Files uploaded to OpenStack Swift container – \"${BACKUP_OS_CONTAINER}\":"
 fi
 
