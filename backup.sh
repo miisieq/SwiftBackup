@@ -38,7 +38,7 @@ function check_commands_existence() {
 
 function upload_file() {
     AUTHORIZATION="
-        --auth-version 2
+        --auth-version 3
         --os-auth-url ${BACKUP_OS_AUTH_URL}
         --os-username ${BACKUP_OS_USERNAME}
         --os-password ${BACKUP_OS_PASSWORD}
@@ -75,6 +75,7 @@ fi
 for MYSQL_DATABASE in "${BACKUP_MYSQL_DATABASES[@]}"; do
     FILENAME="db_${MYSQL_DATABASE}_$(date '+%Y-%m-%d_%H-%M-%S').sql.gz"
     mysqldump \
+        --ssl-mode=DISABLED \
         --column-statistics=0 \
         --host="$BACKUP_MYSQL_HOST" \
         --user="$BACKUP_MYSQL_USER" \
